@@ -15,7 +15,7 @@ import sqlalchemy
 from .database import get_db, SessionLocal
 from .init_db import init_db
 from . import models
-from .api import simulation  # <--- Import the new router
+from .api import simulation, proposal
 
 # -----------------------------------------------------------------------------
 # Lifespan Event Handler
@@ -64,6 +64,8 @@ app.add_middleware(
 
 # Register the Simulation/Calculation Router
 app.include_router(simulation.router, prefix="/api", tags=["Simulation"])
+# Register the AI Proposal Router
+app.include_router(proposal.router, prefix="/api", tags=["AI Proposal"])
 
 @app.get("/")
 async def root():
