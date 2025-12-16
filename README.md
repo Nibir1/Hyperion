@@ -111,6 +111,7 @@ To run the full test suite and view the coverage report:
 
 ```bash
 make tests
+```
 
 ### Access Points
 
