@@ -1,14 +1,8 @@
 # Hyperion | AI-Powered Energy Configurator
 
-<div align="center">
-  <img src="frontend/public/logo.png" alt="Hyperion Logo" width="120" />
-  <br />
-  <br />
-  
-  **Hybrid Power Plant Simulation & Sales Analytics Platform**
-  <br />
-  <i>Configure Engines, Solar, and Storage. Simulate Physics. Generate Proposals.</i>
-</div>
+[![Hyperion Demo](https://img.youtube.com/vi/PkIsMVDxh-Q/maxresdefault.jpg)](https://youtu.be/PkIsMVDxh-Q)
+
+> 📺 **[Watch the full end-to-end demo](https://youtu.be/PkIsMVDxh-Q)** featuring core functionalities.
 
 <br />
 
@@ -80,7 +74,7 @@ The application is built on a containerized Microservices architecture:
 
 1.  **Clone the repository**
     ```bash
-    git clone [https://github.com/Nibir1/Hyperion.git](https://github.com/Nibir1/Hyperion.git)
+    git clone https://github.com/Nibir1/Hyperion.git
     cd Hyperion
     ```
 
