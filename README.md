@@ -12,6 +12,7 @@
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Pandas](https://img.shields.io/badge/Pandas-Simulation-150458?style=for-the-badge&logo=pandas&logoColor=white)
 ![LangChain](https://img.shields.io/badge/AI-LangChain-orange?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-Passing-green?style=for-the-badge)
 
 **Hyperion** is a full-stack technical sales tool designed for the Energy Industry. It bridges the gap between complex engineering simulations and executive sales proposals.
 
@@ -94,13 +95,27 @@ Make build command internally runs:
 ```bash
 docker-compose build --no-cache
 docker-compose up -d
-@echo "✅ Application running at http://localhost:3000"
+@echo "Application running at http://localhost:3000"
 ```
+
+### Testing & Validation
+
+This project includes a comprehensive test suite using **Pytest** that covers **100% of the critical calculation logic** and API endpoints.
+
+The tests run inside the Docker container to ensure environment consistency. We use:
+- **In-Memory SQLite:** To perform fast, isolated database integration tests without affecting the persistence layer.
+- **Unittest Mocks:** To simulate OpenAI API calls, ensuring the test suite is zero-cost and runs offline.
+- **Pytest-Cov:** To verify code coverage metrics.
+
+To run the full test suite and view the coverage report:
+
+```bash
+make tests
 
 ### Access Points
 
--   **Frontend Dashboard:** [http://localhost:3000](http://localhost:3000)
--   **Backend Swagger Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
+-  **Frontend Dashboard:** [http://localhost:3000](http://localhost:3000)
+-  **Backend Swagger Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
