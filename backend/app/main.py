@@ -15,6 +15,7 @@ import sqlalchemy
 from .database import get_db, SessionLocal
 from .init_db import init_db
 from . import models
+from .api import simulation  # <--- Import the new router
 
 # -----------------------------------------------------------------------------
 # Lifespan Event Handler
@@ -60,6 +61,10 @@ app.add_middleware(
 # -----------------------------------------------------------------------------
 # Routes
 # -----------------------------------------------------------------------------
+
+# Register the Simulation/Calculation Router
+app.include_router(simulation.router, prefix="/api", tags=["Simulation"])
+
 @app.get("/")
 async def root():
     return {"system": "Hyperion Configurator", "status": "Online", "version": "v1.0.0"}

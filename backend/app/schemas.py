@@ -37,3 +37,38 @@ class Configuration(ConfigurationBase):
 
     class Config:
         from_attributes = True
+
+# --- Simulation / Calculation Schemas ---
+class CalculationRequest(BaseModel):
+    """
+    Input payload for the simulation engine.
+    """
+    num_engines: int
+    solar_mw: float
+    battery_mwh: float
+
+class SimulationFrame(BaseModel):
+    """
+    Represents a single hour of data for the chart.
+    """
+    hour: int
+    solar_mw: float
+    engine_mw: float
+    battery_mw: float
+    load_mw: float
+    total_mw: float
+
+class SimulationKPIs(BaseModel):
+    """
+    Key Performance Indicators for the result cards.
+    """
+    total_capex_usd: float
+    annual_co2_savings_tons: float
+    lcoe_cents_kwh: float # Levelized Cost of Electricity
+
+class CalculationResponse(BaseModel):
+    """
+    Full response object containing the chart data and KPIs.
+    """
+    kpis: SimulationKPIs
+    charts: list[SimulationFrame]
