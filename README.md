@@ -1,8 +1,8 @@
 # Hyperion | AI-Powered Energy Configurator
 
-[![Hyperion Demo](https://img.youtube.com/vi/F7GhoWlIzPU/maxresdefault.jpg)](https://youtu.be/F7GhoWlIzPU)
+[![Hyperion Demo](https://img.youtube.com/vi/Cp0jwLES0yo/maxresdefault.jpg)](https://youtu.be/Cp0jwLES0yo)
 
-> 📺 **[Watch the full end-to-end demo](https://youtu.be/F7GhoWlIzPU)** featuring core functionalities.
+> 📺 **[Watch the full end-to-end demo](https://youtu.be/Cp0jwLES0yo)** featuring core functionalities.
 
 <br />
 
