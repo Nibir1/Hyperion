@@ -2,8 +2,9 @@
 Pydantic Schemas
 ----------------
 Data validation and serialization for API requests/responses.
+Updated for Pydantic V2 syntax (ConfigDict).
 """
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Dict, Any, Optional
 from datetime import datetime
 
@@ -18,9 +19,8 @@ class ProductCreate(ProductBase):
 
 class Product(ProductBase):
     id: int
-
-    class Config:
-        from_attributes = True # updated from 'orm_mode' in Pydantic v2
+    # FIX: Use model_config instead of class Config
+    model_config = ConfigDict(from_attributes=True)
 
 # --- Configuration Schemas ---
 class ConfigurationBase(BaseModel):
@@ -34,11 +34,11 @@ class ConfigurationCreate(ConfigurationBase):
 class Configuration(ConfigurationBase):
     id: int
     created_at: datetime
-
-    class Config:
-        from_attributes = True
+    # FIX: Use model_config instead of class Config
+    model_config = ConfigDict(from_attributes=True)
 
 # --- Simulation / Calculation Schemas ---
+
 class CalculationRequest(BaseModel):
     """
     Input payload for the simulation engine.
@@ -64,7 +64,7 @@ class SimulationKPIs(BaseModel):
     """
     total_capex_usd: float
     annual_co2_savings_tons: float
-    lcoe_cents_kwh: float # Levelized Cost of Electricity
+    lcoe_cents_kwh: float
 
 class CalculationResponse(BaseModel):
     """
@@ -72,3 +72,13 @@ class CalculationResponse(BaseModel):
     """
     kpis: SimulationKPIs
     charts: list[SimulationFrame]
+
+# --- AI Proposal Schemas ---
+
+class ProposalRequest(BaseModel):
+    num_engines: int
+    solar_mw: float
+    battery_mwh: float
+
+class ProposalResponse(BaseModel):
+    proposal_text: str

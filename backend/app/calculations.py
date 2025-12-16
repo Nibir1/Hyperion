@@ -2,17 +2,14 @@
 Calculation Engine (Pandas/NumPy)
 ---------------------------------
 Performs physics-based simulation of hybrid power plants.
-Generates 24-hour profiles for Solar, Engines, and Battery usage.
-Calculates Financials (CAPEX, LCOE) and Environmental impact.
 """
 import pandas as pd
 import numpy as np
-from math import pi
 
 # Constants for Simulation
-BASE_LOAD_MW = 50.0  # Assume a constant industrial factory load
-CO2_GRID_INTENSITY = 0.5  # tons/MWh (Coal-heavy grid baseline)
-CO2_GAS_INTENSITY = 0.2   # tons/MWh (Natural Gas Engine)
+BASE_LOAD_MW = 50.0 
+CO2_GRID_INTENSITY = 0.5 
+CO2_GAS_INTENSITY = 0.2 
 
 def calculate_hybrid_performance(
     num_engines: int, 
@@ -24,18 +21,16 @@ def calculate_hybrid_performance(
     Simulates a 24-hour dispatch cycle.
     """
     
-    # 1. Create Time Index (0 to 23 hours)
+    # 1. Create Time Index
     hours = np.arange(24)
     df = pd.DataFrame(index=hours)
     df['hour'] = hours
 
-    # 2. Generate Solar Generation Profile (Bell Curve)
-    # Peak at hour 12, width controls the spread. Max height = installed capacity.
+    # 2. Solar Profile
     df['solar_mw'] = solar_mw * np.exp( - (hours - 12)**2 / (2 * 2.5**2) )
     df['solar_mw'] = df['solar_mw'].clip(lower=0) 
 
-    # 3. Define Battery Discharge Profile
-    # Distribute MWh over 4 hours (18:00 - 21:00)
+    # 3. Battery Profile
     discharge_power = 0
     if battery_mwh > 0:
         discharge_power = battery_mwh / 4.0 
@@ -44,19 +39,14 @@ def calculate_hybrid_performance(
     mask_evening = (df['hour'] >= 18) & (df['hour'] <= 21)
     df.loc[mask_evening, 'battery_mw'] = discharge_power
 
-    # 4. Engine Dispatch (Baseload Logic)
-    total_engine_capacity = num_engines * engine_specs.get("nominal_power_mw", 0)
+    # 4. Engine Dispatch
+    # Use dynamic capacity from specs, not hardcoded!
+    nominal_mw = engine_specs.get("nominal_power_mw", 0)
+    total_engine_capacity = num_engines * nominal_mw
     
-    # RENAME FIX: 'required_load' -> 'load_mw' to match Pydantic Schema
     df['load_mw'] = BASE_LOAD_MW
-    
-    # Net Load = Demand - (Solar + Battery)
     df['net_load'] = df['load_mw'] - (df['solar_mw'] + df['battery_mw'])
-    
-    # Engine output is Net Load, capped at Max Capacity, floor at 0
     df['engine_mw'] = df['net_load'].clip(lower=0, upper=total_engine_capacity)
-
-    # Calculate Total Output actually delivered
     df['total_mw'] = df['solar_mw'] + df['engine_mw'] + df['battery_mw']
 
     # ---------------------------------------------------------
@@ -66,11 +56,14 @@ def calculate_hybrid_performance(
     total_solar_mwh = df['solar_mw'].sum()
     total_engine_mwh = df['engine_mw'].sum()
     total_battery_mwh = df['battery_mw'].sum()
-    
     total_gen_mwh = total_solar_mwh + total_engine_mwh + total_battery_mwh
 
     # CAPEX Calculation
-    capex_engine = num_engines * 12000 * 800  
+    # FIX: Use dynamic nominal power from specs (MW -> kW conversion)
+    # If specs don't have cost, fallback to default 800
+    cost_per_kw = engine_specs.get("capex_per_kw", 800)
+    
+    capex_engine = num_engines * (nominal_mw * 1000) * cost_per_kw
     capex_solar = solar_mw * 1000 * 700       
     capex_battery = battery_mwh * 1000 * 350  
     total_capex = capex_engine + capex_solar + capex_battery

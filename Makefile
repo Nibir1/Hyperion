@@ -4,6 +4,9 @@ build:
 	docker-compose up -d
 	@echo "Application running at http://localhost:3000"
 
+tests:
+	docker-compose exec backend pytest --cov=app tests/
+
 up:
 	docker-compose up -d
 	@echo "Application running at http://localhost:3000"
@@ -23,4 +26,4 @@ clean:
 shell-backend:
 	docker-compose exec backend /bin/bash
 
-.PHONY: build up down logs clean shell-backend
+.PHONY: build up down logs clean shell-backend tests
