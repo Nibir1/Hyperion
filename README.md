@@ -17,11 +17,11 @@
 **Hyperion** is a full-stack technical sales tool designed for the Energy Industry. It bridges the gap between complex engineering simulations and executive sales proposals.
 
 ### Why this exists
-Industrial energy sales (e.g., Wärtsilä, Siemens Energy) require complex calculations to prove value. Spreadsheets are error-prone, and static PDFs don't scale. Hyperion solves this by:
+Industrial energy sales require complex calculations to prove value. Spreadsheets are error-prone, and static PDFs don't scale. Hyperion solves this by:
 
-1.  **Physics-Based Simulation:** Instead of static estimates, it uses a **Pandas/NumPy engine** to simulate a 24-hour power dispatch cycle (Solar Curves + Engine Baseload + Battery Peak Shifting).
-2.  **Instant Financial Feedback:** Calculates **LCOE** (Levelized Cost of Electricity) and CAPEX in real-time.
-3.  **GenAI Automation:** Uses **LangChain & GPT-4o** to instantly draft technical proposals based on the specific simulation data, reducing hours of manual writing.
+1. **Geospatial Physics Engine:** Instead of static estimates, it uses a **Pandas/NumPy engine** to model solar irradiance based on **Latitude and Orbital Mechanics**. It simulates a site-specific 24-hour hybrid dispatch cycle (Solar + Industrial Gas Engine + Battery).
+2. **Instant Financial Feedback:** Calculates **LCOE** (Levelized Cost of Electricity), CAPEX, and CO2 reduction metrics in real-time.
+3. **Context-Aware AI Automation:** Uses **LangChain & GPT-4o** to instantly draft technical proposals. The AI analyzes the **geospatial data** (e.g., solar seasonality at high latitudes) to generate location-specific value propositions.
 
 ---
 
@@ -29,38 +29,38 @@ Industrial energy sales (e.g., Wärtsilä, Siemens Energy) require complex calcu
 
 The application is built on a containerized Microservices architecture:
 
-1.  **Frontend (React + TypeScript):** A high-performance dashboard using **Material UI** and **Recharts** for real-time visualization of energy profiles.
-2.  **Calculation Engine (Python + Pandas):** A vectorised simulation layer that generates synthetic solar data and optimizes dispatch logic (Solar → Battery → Engine).
-3.  **Backend API (FastAPI):** Asynchronous orchestration handling simulation requests and DB transactions.
-4.  **Database (PostgreSQL):** Persists hardware specifications (Products) and user configurations.
-5.  **AI Service (LangChain):** Chains simulation KPIs into prompt templates to generate context-aware sales pitches.
+1. **Frontend (React + TypeScript):** A high-performance dashboard using **Material UI** and **Recharts** for real-time visualization of energy profiles.
+2. **Calculation Engine (Python + Pandas):** A vectorised simulation layer that generates synthetic solar data and optimizes dispatch logic (Solar → Battery → Engine).
+3. **Backend API (FastAPI):** Asynchronous orchestration handling simulation requests and DB transactions.
+4. **Database (PostgreSQL):** Persists hardware specifications (Products) and user configurations.
+5. **AI Service (LangChain):** Chains simulation KPIs into prompt templates to generate context-aware sales pitches.
 
 ## Key Features
 
--   **Dynamic Configurator:** Sliders to adjust Engine Count, Solar MW, and Battery MWh.
--   **Real-Time Physics:** Visualizes the "Duck Curve" phenomenon where engines ramp down as solar peaks.
--   **Financial Modeling:** Automatic calculation of Total CAPEX and CO2 Savings vs Coal baseline.
--   **AI Proposal Agent:** "One-Click" generation of executive summaries citing specific project numbers.
+- **Geospatial Configurator:** Sliders to adjust **Site Latitude**, Engine Count, Solar MW, and Battery MWh to model any location globally.
+- **Orbital Physics Engine:** Calculates real-time solar irradiance based on Earth-Sun geometry (Declination & Elevation), visualizing the "Duck Curve" effect where engines ramp down as solar peaks.
+- **Financial Modeling:** Automatic calculation of **LCOE** (Levelized Cost of Electricity), Total CAPEX, and CO2 Savings vs Coal baseline.
+- **Context-Aware AI Agent:** "One-Click" generation of vendor-neutral executive summaries that analyze **site-specific solar seasonality** and reliability data.
 
 ---
 
 ## Tech Stack
 
 ### Backend & Data
--   **Framework:** FastAPI (Async Python 3.10)
--   **Simulation:** Pandas, NumPy (Vectorized Operations)
--   **AI:** LangChain, OpenAI GPT-4o-mini
--   **Database:** PostgreSQL 15, SQLAlchemy (ORM), Pydantic (Validation)
+- **Framework:** FastAPI (Async Python 3.10)
+- **Simulation:** Pandas, NumPy (Vectorized Operations)
+- **AI:** LangChain, OpenAI GPT-4o-mini
+- **Database:** PostgreSQL 15, SQLAlchemy (ORM), Pydantic (Validation)
 
 ### Frontend
--   **Core:** React 18, Vite, TypeScript
--   **UI Library:** Material UI (MUI v5)
--   **Visualization:** Recharts (D3-based wrapper)
--   **Networking:** Axios
+- **Core:** React 18, Vite, TypeScript
+- **UI Library:** Material UI (MUI v5)
+- **Visualization:** Recharts (D3-based wrapper)
+- **Networking:** Axios
 
 ### DevOps
--   **Containerization:** Docker, Docker Compose
--   **Hot Reloading:** Configured for both Frontend & Backend dev capability.
+- **Containerization:** Docker, Docker Compose
+- **Hot Reloading:** Configured for both Frontend & Backend dev capability.
 
 ---
 
@@ -68,8 +68,8 @@ The application is built on a containerized Microservices architecture:
 
 ### Prerequisites
 
--   Docker Desktop installed
--   OpenAI API Key
+- Docker Desktop installed
+- OpenAI API Key
 
 ### Installation
 
@@ -115,8 +115,8 @@ make tests
 
 ### Access Points
 
--  **Frontend Dashboard:** [http://localhost:3000](http://localhost:3000)
--  **Backend Swagger Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
+- **Frontend Dashboard:** [http://localhost:3000](http://localhost:3000)
+- **Backend Swagger Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
@@ -124,15 +124,15 @@ make tests
 
 ### 1. The Physics Simulation (`calculations.py`)
 Hyperion doesn't guess; it calculates.
--   **Solar:** Generates a Gaussian bell curve peaking at 12:00 PM.
--   **Battery:** Detects evening peak demand (18:00-21:00) and discharges stored energy.
--   **Engines:** Fill the remaining "Net Load" gap to ensure 100% reliability.
+- **Solar:** Generates a Gaussian bell curve peaking at 12:00 PM.
+- **Battery:** Detects evening peak demand (18:00-21:00) and discharges stored energy.
+- **Engines:** Fill the remaining "Net Load" gap to ensure 100% reliability.
 
 ### 2. The AI Workflow (`ai_service.py`)
-1.  User clicks "Generate Proposal".
-2.  Backend runs the simulation to get final KPIs (e.g., "45,000 Tons CO2 Saved").
-3.  LangChain injects these numbers into a prompt template.
-4.  LLM returns a cohesive paragraph explaining *why* this specific configuration is profitable.
+1. User clicks "Generate Proposal".
+2. Backend runs the simulation to get final KPIs (e.g., "45,000 Tons CO2 Saved").
+3. LangChain injects these numbers into a prompt template.
+4. LLM returns a cohesive paragraph explaining *why* this specific configuration is profitable.
 
 ---
 
