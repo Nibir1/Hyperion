@@ -1,29 +1,53 @@
 """
 Hyperion Backend Entry Point
 ----------------------------
-This file initializes the FastAPI application, sets up CORS to allow
-frontend communication, and provides a health check endpoint.
+Initializes the FastAPI application, Database, and CORS.
+Includes detailed health checks for system modules.
 """
 
-from fastapi import FastAPI
+from contextlib import asynccontextmanager
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-import pandas as pd # Import verification check
-import sqlalchemy # Import verification check
+from sqlalchemy.orm import Session
+import pandas as pd
+import sqlalchemy
 
+from .database import get_db, SessionLocal
+from .init_db import init_db
+from . import models
+
+# -----------------------------------------------------------------------------
+# Lifespan Event Handler
+# -----------------------------------------------------------------------------
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Executes on application startup.
+    1. Connects to DB.
+    2. Creates tables.
+    3. Seeds initial data.
+    """
+    db = SessionLocal()
+    try:
+        init_db(db)
+    finally:
+        db.close()
+    
+    yield
+    # (Optional) Shutdown logic would go here
+
+# -----------------------------------------------------------------------------
+# App Definition
+# -----------------------------------------------------------------------------
 app = FastAPI(
     title="Hyperion Energy Configurator API",
     description="Backend logic for calculating hybrid energy plant performance.",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
-# -----------------------------------------------------------------------------
 # CORS Configuration
-# -----------------------------------------------------------------------------
-# Allows the React frontend (running on localhost:3000) to communicate with this API.
-origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -36,23 +60,15 @@ app.add_middleware(
 # -----------------------------------------------------------------------------
 # Routes
 # -----------------------------------------------------------------------------
-
 @app.get("/")
 async def root():
-    """
-    Root endpoint to verify the backend is running.
-    """
-    return {
-        "system": "Hyperion Configurator",
-        "status": "Online",
-        "version": "v1.0.0",
-        "docs": "/docs"
-    }
+    return {"system": "Hyperion Configurator", "status": "Online", "version": "v1.0.0"}
 
 @app.get("/health")
 async def health_check():
     """
-    Health check endpoint for container orchestration.
+    Health check endpoint.
+    Returns status and version info for critical data libraries.
     """
     return {
         "status": "healthy",
@@ -61,3 +77,11 @@ async def health_check():
             "sqlalchemy": sqlalchemy.__version__
         }
     }
+
+@app.get("/products")
+async def get_products(db: Session = Depends(get_db)):
+    """
+    Fetch available hardware specs (Engines, Solar, etc.)
+    """
+    products = db.query(models.Product).all()
+    return products
