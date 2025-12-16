@@ -86,8 +86,16 @@ The application is built on a containerized Microservices architecture:
 
 3.  **Build and Run**
     ```bash
-    docker-compose up --build
+    make build
     ```
+
+Make build command internally runs:
+
+```bash
+docker-compose build --no-cache
+docker-compose up -d
+@echo "✅ Application running at http://localhost:3000"
+```
 
 ### Access Points
 
