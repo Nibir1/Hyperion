@@ -151,6 +151,7 @@ Hyperion/
 - [ ] User Auth (Save Projects per User)
 - [ ] PDF Export of Charts
 
-## MIT License
+## License
+This project is open-source and available under the MIT License.
 
-Author: **Nahasat Nibir** -- Senior Backend Engineer & AI Systems Architect
+Author: Nahasat Nibir - Full Stack Data & AI Engineer
