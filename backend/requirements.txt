@@ -1,0 +1,22 @@
+# Web Framework
+fastapi==0.109.0
+uvicorn==0.27.0
+python-multipart==0.0.6
+
+# Data & Simulation Engine
+pandas==2.2.0
+numpy==1.26.3
+
+# Database (ORM & Driver)
+sqlalchemy==2.0.25
+psycopg2-binary==2.9.9
+
+# AI & LLM Integration
+langchain==0.1.0
+langchain-openai==0.0.2
+openai==1.6.1
+
+# Utilities
+pydantic==2.5.3
+pydantic-settings==2.1.0
+python-dotenv==1.0.0

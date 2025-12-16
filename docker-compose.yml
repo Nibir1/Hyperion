@@ -1,0 +1,55 @@
+services:
+  # ---------------------------------------------------------------------------
+  # Database Service (PostgreSQL)
+  # Stores Product specs and Saved Configurations
+  # ---------------------------------------------------------------------------
+  db:
+    image: postgres:15-alpine
+    container_name: hyperion_db
+    restart: always
+    environment:
+      POSTGRES_USER: hyperion_user
+      POSTGRES_PASSWORD: hyperion_password
+      POSTGRES_DB: hyperion_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # ---------------------------------------------------------------------------
+  # Backend Service (FastAPI)
+  # Handles Data Logic, Calculations, and AI processing
+  # ---------------------------------------------------------------------------
+  backend:
+    build: ./backend
+    container_name: hyperion_backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./backend:/code  # Syncs local code changes to container (Hot Reload)
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://hyperion_user:hyperion_password@db:5432/hyperion_db
+      - OPENAI_API_KEY=${OPENAI_API_KEY} # Reads from local shell environment
+    depends_on:
+      - db
+
+  # ---------------------------------------------------------------------------
+  # Frontend Service (React + Vite)
+  # The Sales Dashboard UI
+  # ---------------------------------------------------------------------------
+  frontend:
+    build: ./frontend
+    container_name: hyperion_frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules # Prevent host node_modules from overwriting container's
+    ports:
+      - "3000:3000"
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Necessary for hot-reloading on Docker Windows/Mac
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
