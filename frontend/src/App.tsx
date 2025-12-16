@@ -10,7 +10,8 @@ function App() {
   const [inputs, setInputs] = useState<Inputs>({
     num_engines: 4,
     solar_mw: 20,
-    battery_mwh: 10
+    battery_mwh: 10,
+    latitude: 0 // Start at Equator
   });
 
   const [charts, setCharts] = useState<SimulationFrame[]>([]);
@@ -57,7 +58,6 @@ function App() {
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
       {/* Header */}
       <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', gap: 2 }}>
-        <img src="/logo.svg" alt="logo" style={{ width: 50, backgroundColor: "#000000ff", filter: "invert(1)", }} />
         <Typography variant="h4" component="h1" fontWeight="bold" sx={{ letterSpacing: 1 }}>
           HYPERION <span style={{ color: '#ff9800', fontSize: '0.6em' }}>CONFIGURATOR</span>
         </Typography>

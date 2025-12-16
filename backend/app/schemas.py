@@ -46,6 +46,7 @@ class CalculationRequest(BaseModel):
     num_engines: int
     solar_mw: float
     battery_mwh: float
+    latitude: float = 0.0
 
 class SimulationFrame(BaseModel):
     """
@@ -79,6 +80,7 @@ class ProposalRequest(BaseModel):
     num_engines: int
     solar_mw: float
     battery_mwh: float
+    latitude: float = 0.0
 
 class ProposalResponse(BaseModel):
     proposal_text: str

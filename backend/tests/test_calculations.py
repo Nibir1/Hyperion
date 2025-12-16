@@ -57,13 +57,15 @@ def test_solar_impact():
         num_engines=10, # 100MW Capacity (Plenty)
         solar_mw=20,
         battery_mwh=0,
-        engine_specs=MOCK_SPECS
+        engine_specs=MOCK_SPECS,
+        latitude=0 # Equator
     )
     
     noon = result["charts"][12]
     
-    # Solar should be peaking ~20MW
-    assert noon["solar_mw"] > 19.0 
+    # UPDATE: Physics model (Day 172 @ Equator) yields ~18.3 MW peak due to declination.
+    # We relax the check from 19.0 to 18.0 to account for realistic sun angle.
+    assert noon["solar_mw"] > 18.0 
     
     # Load is 50. Engine should be 50 - Solar
     expected_engine = 50.0 - noon["solar_mw"]
@@ -86,3 +88,25 @@ def test_financials():
     # 10 MW * 1000 kW/MW * $800 = 8,000,000
     expected_capex = 10 * 1000 * 800
     assert result["kpis"]["total_capex_usd"] == expected_capex
+
+def test_geospatial_impact():
+    """
+    Test that Latitude affects solar output.
+    Equator (0 deg) should have HIGHER peak than Finland (60 deg).
+    """
+    # Equator Simulation
+    res_eq = calculations.calculate_hybrid_performance(
+        num_engines=4, solar_mw=50, battery_mwh=0, engine_specs=MOCK_SPECS, 
+        latitude=0
+    )
+    peak_eq = max(x['solar_mw'] for x in res_eq['charts'])
+    
+    # Finland Simulation (60 degrees North)
+    res_fin = calculations.calculate_hybrid_performance(
+        num_engines=4, solar_mw=50, battery_mwh=0, engine_specs=MOCK_SPECS, 
+        latitude=60
+    )
+    peak_fin = max(x['solar_mw'] for x in res_fin['charts'])
+    
+    # Physics check: Sun is lower in Finland -> Less Power
+    assert peak_fin < peak_eq

@@ -35,11 +35,12 @@ async def run_simulation(
     # 3. Run Calculation
     try:
         result = calculations.calculate_hybrid_performance(
-            num_engines=request.num_engines,
-            solar_mw=request.solar_mw,
-            battery_mwh=request.battery_mwh,
-            engine_specs=specs
-        )
+        num_engines=request.num_engines,
+        solar_mw=request.solar_mw,
+        battery_mwh=request.battery_mwh,
+        engine_specs=specs,
+        latitude=request.latitude
+    )
         return result
         
     except Exception as e:

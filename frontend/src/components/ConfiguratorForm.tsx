@@ -1,7 +1,8 @@
 import React from 'react';
-import { Paper, Typography, Slider, Box, Grid, Button, CircularProgress } from '@mui/material';
+import { Paper, Typography, Slider, Box, Button, CircularProgress } from '@mui/material';
 import { Inputs } from '../services/api';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import PublicIcon from '@mui/icons-material/Public'; // Globe icon for geospatial
 
 interface Props {
   inputs: Inputs;
@@ -22,8 +23,29 @@ const ConfiguratorForm: React.FC<Props> = ({ inputs, setInputs, onGeneratePropos
         Plant Configuration
       </Typography>
       
+      {/* 1. Geospatial Input (New Feature) */}
       <Box sx={{ my: 4 }}>
-        <Typography gutterBottom>Engine Count (Wärtsilä 31SG)</Typography>
+        <Typography gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <PublicIcon fontSize="small" color="action" /> 
+          Site Latitude ({inputs.latitude}°)
+        </Typography>
+        <Slider
+          value={inputs.latitude}
+          onChange={handleChange('latitude')}
+          step={5} 
+          min={-60} 
+          max={60}
+          valueLabelDisplay="auto"
+          sx={{ color: '#2196f3' }} 
+        />
+        <Typography variant="caption" color="text.secondary">
+          -60° (South) to 60° (North). Affects solar physics.
+        </Typography>
+      </Box>
+
+      {/* 2. Engines */}
+      <Box sx={{ my: 4 }}>
+        <Typography gutterBottom>Industrial Gas Engine Units</Typography>
         <Slider
           value={inputs.num_engines}
           onChange={handleChange('num_engines')}
@@ -33,6 +55,7 @@ const ConfiguratorForm: React.FC<Props> = ({ inputs, setInputs, onGeneratePropos
         />
       </Box>
 
+      {/* 3. Solar */}
       <Box sx={{ my: 4 }}>
         <Typography gutterBottom>Solar Capacity (MW)</Typography>
         <Slider
@@ -44,6 +67,7 @@ const ConfiguratorForm: React.FC<Props> = ({ inputs, setInputs, onGeneratePropos
         />
       </Box>
 
+      {/* 4. Battery */}
       <Box sx={{ my: 4 }}>
         <Typography gutterBottom>Battery Storage (MWh)</Typography>
         <Slider

@@ -27,6 +27,7 @@ export interface Inputs {
   num_engines: number;
   solar_mw: number;
   battery_mwh: number;
+  latitude: number;
 }
 
 // --- API Calls ---
